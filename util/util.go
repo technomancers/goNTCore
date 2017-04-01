@@ -9,7 +9,8 @@ const (
 	mostSigBit   uint32 = 0x80
 )
 
-//EncodeULeb128 encodes the
+//EncodeULeb128 encodes the integer using the LEB128 Standard.
+//32 bit unsigned integer should be sufficient as that would represent a data length of 4.2 GB.
 func EncodeULeb128(value uint32) []byte {
 	//figure out the remaining bits
 	remaining := value >> 7
