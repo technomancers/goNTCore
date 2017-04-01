@@ -28,3 +28,9 @@ type Marshaler interface {
 type Unmarshaler interface {
 	UnmarshalEntry([]byte) error
 }
+
+//Entrier is the interface implemented by types that can be an Entry in the Network Tables.
+type Entrier interface {
+	Type() byte
+	Marshaler
+}

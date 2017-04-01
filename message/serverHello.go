@@ -5,7 +5,7 @@ import (
 )
 
 const (
-	flagAlreadySeenMask byte = 0x01
+	flagAlreadySeenClientMask byte = 0x01
 )
 
 //ServerHello is a message sent from the server immediatley after it recieves the ClientHello message.
@@ -33,13 +33,13 @@ func (sh *ServerHello) MarshalMessage() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+	flags := byte(0x00)
+	if !sh.firstTimeClient {
+		flags = flags | flagAlreadySeenClientMask
+	}
 	var output []byte
 	output = append(output, sh.Type())
-	if sh.firstTimeClient {
-		output = append(output, 0x00)
-	} else {
-		output = append(output, flagAlreadySeenMask)
-	}
+	output = append(output, flags)
 	output = append(output, snBytes...)
 	return output, nil
 }
