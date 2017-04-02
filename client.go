@@ -47,11 +47,13 @@ func (c *Client) Listen() {
 		_, err := io.ReadFull(c, possibleMsgType)
 		if err != nil {
 			c.Log <- NewErrorMessage(err)
+			c.Close()
 			continue
 		}
 		msg, err := message.Unmarshal(possibleMsgType[0], c)
 		if err != nil {
 			c.Log <- NewErrorMessage(err)
+			c.Close()
 			continue
 		}
 		c.handler(msg)

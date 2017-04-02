@@ -166,7 +166,6 @@ func (s *Server) handler(msg message.Messager, cl *Client) {
 func (s *Server) startingHandshake(msg *message.ClientHello, cl *Client) {
 	cl.name = msg.GetClientName()
 	msgProto := msg.GetProtocol()
-	s.addClient(cl)
 	if !util.Match(msgProto[:], ProtocolVersion[:]) {
 		err := SendMsg(message.NewProtoUnsupported(ProtocolVersion), cl)
 		if err != nil {
@@ -176,6 +175,9 @@ func (s *Server) startingHandshake(msg *message.ClientHello, cl *Client) {
 		return
 	}
 	exist := s.clientExist(cl)
+	if !exist {
+		s.addClient(cl)
+	}
 	err := SendMsg(message.NewServerHello(!exist, s.name), cl)
 	if err != nil {
 		s.Log <- NewErrorMessage(err)
