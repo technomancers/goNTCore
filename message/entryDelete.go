@@ -38,8 +38,6 @@ func (ed *EntryDelete) UnmarshalMessage(reader io.Reader) error {
 		return err
 	}
 
-	for i := 0; i < len(idBuf); i++ {
-		ed.entryID[i] = idBuf[i]
-	}
+	copy(ed.entryID[:], idBuf)
 	return nil
 }

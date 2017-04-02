@@ -2,6 +2,8 @@ package message
 
 import (
 	"io"
+
+	"github.com/technomancers/goNTCore/util"
 )
 
 var (
@@ -46,12 +48,6 @@ func (cae *ClearAllEntries) UnmarshalMessage(reader io.Reader) error {
 		return err
 	}
 
-	cae.valid = true
-	for i := 0; i < len(buf); i++ {
-		cae.magic[i] = buf[i]
-		if cae.magic[i] != clearAllMagic[i] {
-			cae.valid = false
-		}
-	}
+	cae.valid = util.Match(cae.magic[:], clearAllMagic[:])
 	return nil
 }

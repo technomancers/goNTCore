@@ -38,8 +38,6 @@ func (pu *ProtoUnsupported) UnmarshalMessage(reader io.Reader) error {
 		return err
 	}
 
-	for i := 0; i < len(protoBuf); i++ {
-		pu.protocol[i] = protoBuf[i]
-	}
+	copy(pu.protocol[:], protoBuf)
 	return nil
 }

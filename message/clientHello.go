@@ -21,6 +21,16 @@ func NewClientHello(protocol [2]byte, clientName string) *ClientHello {
 	}
 }
 
+//GetProtocol gets the protocol of the message.
+func (ch *ClientHello) GetProtocol() [2]byte {
+	return ch.protocol
+}
+
+//GetClientName gets the name of the client from the message.
+func (ch *ClientHello) GetClientName() string {
+	return ch.clientName.GetValue()
+}
+
 //MarshalMessage implements Marshaler for Network Table Messages.
 func (ch *ClientHello) MarshalMessage(writer io.Writer) error {
 	_, err := writer.Write([]byte{ch.Type()})
@@ -50,9 +60,7 @@ func (ch *ClientHello) UnmarshalMessage(reader io.Reader) error {
 		return err
 	}
 
-	for i := 0; i < len(protoBuf); i++ {
-		ch.protocol[i] = protoBuf[i]
-	}
+	copy(ch.protocol[:], protoBuf)
 	ch.clientName = st
 	return nil
 }

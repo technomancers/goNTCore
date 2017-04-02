@@ -108,11 +108,7 @@ func (ea *EntryAssign) UnmarshalMessage(reader io.Reader) error {
 	ea.entryName = name
 	ea.entryPersistant = flagBuf[0]&flagPersistantMask == flagPersistantMask
 	ea.entrier = ent
-	for i := 0; i < len(idBuf); i++ {
-		ea.entryID[i] = idBuf[i]
-	}
-	for j := 0; j < len(snBuf); j++ {
-		ea.entrySN[j] = snBuf[j]
-	}
+	copy(ea.entryID[:], idBuf)
+	copy(ea.entrySN[:], snBuf)
 	return nil
 }

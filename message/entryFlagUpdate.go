@@ -57,9 +57,7 @@ func (efu *EntryFlagUpdate) UnmarshalMessage(reader io.Reader) error {
 		return err
 	}
 
-	for i := 0; i < len(idBuf); i++ {
-		efu.entryID[i] = idBuf[i]
-	}
+	copy(efu.entryID[:], idBuf)
 	efu.persitant = flagBuf[0]&flagPersistantMask == flagPersistantMask
 	return nil
 }

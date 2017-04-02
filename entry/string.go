@@ -19,6 +19,11 @@ func NewString(value string) *String {
 	}
 }
 
+//GetValue gets the value of the string.
+func (s *String) GetValue() string {
+	return s.value
+}
+
 //MarshalEntry implements Marshaler for Network Table Entry.
 func (s *String) MarshalEntry(writer io.Writer) error {
 	valueBytes := []byte(s.value)

@@ -49,3 +49,16 @@ func DecodeULeb128(reader io.Reader) (uint32, error) {
 	}
 	return result, nil
 }
+
+//Match takes the two slices and compares them for equality
+func Match(a, b []byte) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	for i, ai := range a {
+		if ai != b[i] {
+			return false
+		}
+	}
+	return true
+}

@@ -73,11 +73,7 @@ func (eu *EntryUpdate) UnmarshalMessage(reader io.Reader) error {
 	}
 
 	eu.entrier = ent
-	for i := 0; i < len(idBuf); i++ {
-		eu.entryID[i] = idBuf[i]
-	}
-	for j := 0; j < len(snBuf); j++ {
-		eu.entrySN[j] = snBuf[j]
-	}
+	copy(eu.entryID[:], idBuf)
+	copy(eu.entrySN[:], snBuf)
 	return nil
 }
