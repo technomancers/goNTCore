@@ -1,18 +1,19 @@
 package entry
 
 import (
+	"errors"
 	"io"
 )
 
 const (
-	eTypeBoolean      byte = 0x00
-	eTypeDouble       byte = 0x01
-	eTypeString       byte = 0x02
-	eTypeRawData      byte = 0x03
-	eTypeBooleanArray byte = 0x10
-	eTypeDoubleArray  byte = 0x11
-	eTypeStringArray  byte = 0x12
-	eTypeRPCDef       byte = 0x20
+	ETypeBoolean      byte = 0x00
+	ETypeDouble       byte = 0x01
+	ETypeString       byte = 0x02
+	ETypeRawData      byte = 0x03
+	ETypeBooleanArray byte = 0x10
+	ETypeDoubleArray  byte = 0x11
+	ETypeStringArray  byte = 0x12
+	ETypeRPCDef       byte = 0x20
 )
 
 type entry struct {
@@ -37,4 +38,34 @@ type Unmarshaler interface {
 type Entrier interface {
 	Type() byte
 	Marshaler
+	Unmarshaler
+}
+
+//Unmarshal takes the type passed in and tries to unmarshal the next bytes from reader based on the type.
+//It returns an instance entry.
+func Unmarshal(t byte, reader io.Reader) (Entrier, error) {
+	var ent Entrier
+	switch t {
+	case ETypeBoolean:
+		ent = new(Boolean)
+	case ETypeDouble:
+		ent = new(Double)
+	case ETypeString:
+		ent = new(String)
+	case ETypeRawData:
+		ent = new(RawData)
+	case ETypeBooleanArray:
+		ent = new(BooleanArray)
+	case ETypeDoubleArray:
+		ent = new(DoubleArray)
+	case ETypeStringArray:
+		ent = new(StringArray)
+	default:
+		return nil, errors.New("Unmarshal Entry: Could not find appropropriate type")
+	}
+	err := ent.UnmarshalEntry(reader)
+	if err != nil {
+		return nil, err
+	}
+	return ent, nil
 }

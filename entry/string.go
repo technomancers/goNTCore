@@ -13,7 +13,7 @@ type String struct {
 func NewString(value string) *String {
 	return &String{
 		entry: entry{
-			eType: eTypeString,
+			eType: ETypeString,
 		},
 		value: value,
 	}
@@ -32,7 +32,7 @@ func (s *String) MarshalEntry(writer io.Writer) error {
 
 //UnmarshalEntry implements Unmarshaler for Network Table Entry.
 func (s *String) UnmarshalEntry(reader io.Reader) error {
-	s.eType = eTypeString
+	s.eType = ETypeString
 	lengthString, err := util.DecodeULeb128(reader)
 	if err != nil {
 		return err

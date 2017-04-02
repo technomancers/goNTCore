@@ -12,7 +12,7 @@ type BooleanArray struct {
 func NewBooleanArray(value []bool) *BooleanArray {
 	ba := &BooleanArray{
 		entry: entry{
-			eType: eTypeBooleanArray,
+			eType: ETypeBooleanArray,
 		},
 	}
 	for _, b := range value {
@@ -40,7 +40,7 @@ func (ba *BooleanArray) MarshalEntry(writer io.Writer) error {
 
 //UnmarshalEntry implements Unmarshaler for Network Table Entry.
 func (ba *BooleanArray) UnmarshalEntry(reader io.Reader) error {
-	ba.eType = eTypeBooleanArray
+	ba.eType = ETypeBooleanArray
 	lenBuf := make([]byte, 1)
 	_, err := io.ReadFull(reader, lenBuf)
 	if err != nil {

@@ -47,6 +47,7 @@ func (efu *EntryFlagUpdate) UnmarshalMessage(reader io.Reader) error {
 	efu.mType = mTypeEntryFlagUpdate
 	idBuf := make([]byte, 2)
 	flagBuf := make([]byte, 1)
+
 	_, err := io.ReadFull(reader, idBuf)
 	if err != nil {
 		return err
@@ -55,6 +56,7 @@ func (efu *EntryFlagUpdate) UnmarshalMessage(reader io.Reader) error {
 	if err != nil {
 		return err
 	}
+
 	for i := 0; i < len(idBuf); i++ {
 		efu.entryID[i] = idBuf[i]
 	}

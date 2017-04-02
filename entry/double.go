@@ -16,7 +16,7 @@ type Double struct {
 func NewDouble(value float64) *Double {
 	return &Double{
 		entry: entry{
-			eType: eTypeDouble,
+			eType: ETypeDouble,
 		},
 		value: value,
 	}
@@ -33,7 +33,7 @@ func (d *Double) MarshalEntry(writer io.Writer) error {
 
 //UnmarshalEntry implements Unmarshaler for Network Table Entry.
 func (d *Double) UnmarshalEntry(reader io.Reader) error {
-	d.eType = eTypeDouble
+	d.eType = ETypeDouble
 	buf := make([]byte, 8)
 	_, err := io.ReadFull(reader, buf)
 	if err != nil {

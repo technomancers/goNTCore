@@ -32,10 +32,12 @@ func (pu *ProtoUnsupported) MarshalMessage(writer io.Writer) error {
 func (pu *ProtoUnsupported) UnmarshalMessage(reader io.Reader) error {
 	pu.mType = mTypeProtoUnsupported
 	protoBuf := make([]byte, 2)
+
 	_, err := io.ReadFull(reader, protoBuf)
 	if err != nil {
 		return err
 	}
+
 	for i := 0; i < len(protoBuf); i++ {
 		pu.protocol[i] = protoBuf[i]
 	}

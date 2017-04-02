@@ -12,7 +12,7 @@ type DoubleArray struct {
 func NewDoubleArray(value []float64) *DoubleArray {
 	da := &DoubleArray{
 		entry: entry{
-			eType: eTypeDoubleArray,
+			eType: ETypeDoubleArray,
 		},
 	}
 	for _, d := range value {
@@ -40,7 +40,7 @@ func (da *DoubleArray) MarshalEntry(writer io.Writer) error {
 
 //UnmarshalEntry implements Unmarshaler for Network Table Entry.
 func (da *DoubleArray) UnmarshalEntry(reader io.Reader) error {
-	da.eType = eTypeDoubleArray
+	da.eType = ETypeDoubleArray
 	lenBuf := make([]byte, 1)
 	_, err := io.ReadFull(reader, lenBuf)
 	if err != nil {

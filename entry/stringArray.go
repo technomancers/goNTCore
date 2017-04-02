@@ -12,7 +12,7 @@ type StringArray struct {
 func NewStringArray(value []string) *StringArray {
 	sa := &StringArray{
 		entry: entry{
-			eType: eTypeStringArray,
+			eType: ETypeStringArray,
 		},
 	}
 	for _, s := range value {
@@ -40,7 +40,7 @@ func (sa *StringArray) MarshalEntry(writer io.Writer) error {
 
 //UnmarshalEntry implements Unmarshaler for Network Table Entry.
 func (sa *StringArray) UnmarshalEntry(reader io.Reader) error {
-	sa.eType = eTypeStringArray
+	sa.eType = ETypeStringArray
 	lenBuf := make([]byte, 1)
 	_, err := io.ReadFull(reader, lenBuf)
 	if err != nil {

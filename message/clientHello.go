@@ -39,17 +39,19 @@ func (ch *ClientHello) MarshalMessage(writer io.Writer) error {
 func (ch *ClientHello) UnmarshalMessage(reader io.Reader) error {
 	ch.mType = mTypeClientHello
 	protoBuf := make([]byte, 2)
+	st := new(entry.String)
+
 	_, err := io.ReadFull(reader, protoBuf)
 	if err != nil {
 		return err
 	}
-	for i := 0; i < len(protoBuf); i++ {
-		ch.protocol[i] = protoBuf[i]
-	}
-	st := new(entry.String)
 	err = st.UnmarshalEntry(reader)
 	if err != nil {
 		return err
+	}
+
+	for i := 0; i < len(protoBuf); i++ {
+		ch.protocol[i] = protoBuf[i]
 	}
 	ch.clientName = st
 	return nil

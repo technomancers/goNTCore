@@ -40,10 +40,12 @@ func (cae *ClearAllEntries) MarshalMessage(writer io.Writer) error {
 func (cae *ClearAllEntries) UnmarshalMessage(reader io.Reader) error {
 	cae.mType = mTypeClearAllEntries
 	buf := make([]byte, 4)
+
 	_, err := io.ReadFull(reader, buf)
 	if err != nil {
 		return err
 	}
+
 	cae.valid = true
 	for i := 0; i < len(buf); i++ {
 		cae.magic[i] = buf[i]

@@ -17,7 +17,7 @@ type Boolean struct {
 func NewBoolean(value bool) *Boolean {
 	return &Boolean{
 		entry: entry{
-			eType: eTypeBoolean,
+			eType: ETypeBoolean,
 		},
 		value: value,
 	}
@@ -35,7 +35,7 @@ func (b *Boolean) MarshalEntry(writer io.Writer) error {
 
 //UnmarshalEntry implements Unmarshaler for Network Table Entry.
 func (b *Boolean) UnmarshalEntry(reader io.Reader) error {
-	b.eType = eTypeBoolean
+	b.eType = ETypeBoolean
 	buf := make([]byte, 1)
 	_, err := io.ReadFull(reader, buf)
 	if err != nil {

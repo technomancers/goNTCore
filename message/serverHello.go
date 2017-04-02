@@ -51,16 +51,18 @@ func (sh *ServerHello) MarshalMessage(writer io.Writer) error {
 func (sh *ServerHello) UnmarshalMessage(reader io.Reader) error {
 	sh.mType = mTypeServerHello
 	flagBuf := make([]byte, 1)
+	st := new(entry.String)
+
 	_, err := io.ReadFull(reader, flagBuf)
 	if err != nil {
 		return err
 	}
-	sh.firstTimeClient = flagBuf[0]&flagAlreadySeenClientMask != flagAlreadySeenClientMask
-	st := new(entry.String)
 	err = st.UnmarshalEntry(reader)
 	if err != nil {
 		return err
 	}
+
+	sh.firstTimeClient = flagBuf[0]&flagAlreadySeenClientMask != flagAlreadySeenClientMask
 	sh.serverName = st
 	return nil
 }

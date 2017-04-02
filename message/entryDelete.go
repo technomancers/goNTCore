@@ -32,10 +32,12 @@ func (ed *EntryDelete) MarshalMessage(writer io.Writer) error {
 func (ed *EntryDelete) UnmarshalMessage(reader io.Reader) error {
 	ed.mType = mTypeEntryDelete
 	idBuf := make([]byte, 2)
+
 	_, err := io.ReadFull(reader, idBuf)
 	if err != nil {
 		return err
 	}
+
 	for i := 0; i < len(idBuf); i++ {
 		ed.entryID[i] = idBuf[i]
 	}

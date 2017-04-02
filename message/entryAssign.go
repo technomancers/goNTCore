@@ -70,3 +70,49 @@ func (ea *EntryAssign) MarshalMessage(writer io.Writer) error {
 	err = ea.entrier.MarshalEntry(writer)
 	return err
 }
+
+//UnmarshalMessage implements Unmarshaler for Network Table Messages and assumes the message type byte has already been read.
+func (ea *EntryAssign) UnmarshalMessage(reader io.Reader) error {
+	ea.mType = mTypeEntryAssign
+	name := new(entry.String)
+	typeBuf := make([]byte, 1)
+	idBuf := make([]byte, 2)
+	snBuf := make([]byte, 2)
+	flagBuf := make([]byte, 1)
+
+	err := name.UnmarshalEntry(reader)
+	if err != nil {
+		return err
+	}
+	_, err = io.ReadFull(reader, typeBuf)
+	if err != nil {
+		return err
+	}
+	_, err = io.ReadFull(reader, idBuf)
+	if err != nil {
+		return err
+	}
+	_, err = io.ReadFull(reader, snBuf)
+	if err != nil {
+		return err
+	}
+	_, err = io.ReadFull(reader, flagBuf)
+	if err != nil {
+		return err
+	}
+	ent, err := entry.Unmarshal(typeBuf[0], reader)
+	if err != nil {
+		return err
+	}
+
+	ea.entryName = name
+	ea.entryPersistant = flagBuf[0]&flagPersistantMask == flagPersistantMask
+	ea.entrier = ent
+	for i := 0; i < len(idBuf); i++ {
+		ea.entryID[i] = idBuf[i]
+	}
+	for j := 0; j < len(snBuf); j++ {
+		ea.entrySN[j] = snBuf[j]
+	}
+	return nil
+}
