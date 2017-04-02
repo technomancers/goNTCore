@@ -1,5 +1,7 @@
 package message
 
+import "io"
+
 //EntryDelete is used to delete an entry from the network.
 type EntryDelete struct {
 	message
@@ -17,9 +19,11 @@ func NewEntryDelete(id [2]byte) *EntryDelete {
 }
 
 //MarshalMessage implements Marshaler for Network Table Messages.
-func (ed *EntryDelete) MarshalMessage() ([]byte, error) {
-	var output []byte
-	output = append(output, ed.Type())
-	output = append(output, ed.entryID[:]...)
-	return output, nil
+func (ed *EntryDelete) MarshalMessage(writer io.Writer) error {
+	_, err := writer.Write([]byte{ed.Type()})
+	if err != nil {
+		return err
+	}
+	_, err = writer.Write(ed.entryID[:])
+	return err
 }

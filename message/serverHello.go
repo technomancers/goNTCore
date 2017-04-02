@@ -1,6 +1,8 @@
 package message
 
 import (
+	"io"
+
 	"github.com/technomancers/goNTCore/entry"
 )
 
@@ -28,18 +30,13 @@ func NewServerHello(firstTime bool, serverName string) *ServerHello {
 }
 
 //MarshalMessage implements Marshaler for Network Table Messages.
-func (sh *ServerHello) MarshalMessage() ([]byte, error) {
-	snBytes, err := sh.serverName.MarshalEntry()
-	if err != nil {
-		return nil, err
-	}
+func (sh *ServerHello) MarshalMessage(writer io.Writer) error {
 	flags := byte(0x00)
 	if !sh.firstTimeClient {
 		flags = flags | flagAlreadySeenClientMask
 	}
-	var output []byte
-	output = append(output, sh.Type())
-	output = append(output, flags)
-	output = append(output, snBytes...)
-	return output, nil
+	_, err := writer.Write([]byte{sh.Type()})
+	_, err = writer.Write([]byte{flags})
+	err = sh.serverName.MarshalEntry(writer)
+	return err
 }

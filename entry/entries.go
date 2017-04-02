@@ -1,5 +1,9 @@
 package entry
 
+import (
+	"io"
+)
+
 const (
 	eTypeBoolean      byte = 0x00
 	eTypeDouble       byte = 0x01
@@ -21,12 +25,12 @@ func (e entry) Type() byte {
 
 //Marshaler is the interface implemented by types that can marshal themselves into valid Network Table Entry Value.
 type Marshaler interface {
-	MarshalEntry() ([]byte, error)
+	MarshalEntry(io.Writer) error
 }
 
 //Unmarshaler is the interface implemented by types that can unmarshal a Network Table Entry Value of themselves.
 type Unmarshaler interface {
-	UnmarshalEntry([]byte) error
+	UnmarshalEntry(io.Reader) error
 }
 
 //Entrier is the interface implemented by types that can be an Entry in the Network Tables.

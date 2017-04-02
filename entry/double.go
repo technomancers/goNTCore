@@ -2,6 +2,7 @@ package entry
 
 import (
 	"encoding/binary"
+	"io"
 	"math"
 )
 
@@ -22,9 +23,10 @@ func NewDouble(value float64) *Double {
 }
 
 //MarshalEntry implements Marshaler for Network Table Entry.
-func (d *Double) MarshalEntry() ([]byte, error) {
+func (d *Double) MarshalEntry(writer io.Writer) error {
 	val := math.Float64bits(d.value)
-	var output []byte
-	binary.BigEndian.PutUint64(output, val)
-	return output, nil
+	buf := make([]byte, 8)
+	binary.BigEndian.PutUint64(buf, val)
+	_, err := writer.Write(buf)
+	return err
 }

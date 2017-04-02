@@ -1,5 +1,9 @@
 package message
 
+import (
+	"io"
+)
+
 const (
 	mTypeKeepAlive           byte = 0x00
 	mTypeClientHello         byte = 0x01
@@ -26,10 +30,10 @@ func (m message) Type() byte {
 
 //Marshaler is the interface implemented by types that can marshal themselves into valid Network Table Message.
 type Marshaler interface {
-	MarshalMessage() ([]byte, error)
+	MarshalMessage(io.Writer) error
 }
 
 //Unmarshaler is the interface implemented by types that can unmarshal a Network Table Message of themselves.
 type Unmarshaler interface {
-	UnmarshalMessage([]byte) error
+	UnmarshalMessage(io.Reader) error
 }

@@ -1,5 +1,7 @@
 package entry
 
+import "io"
+
 //StringArray is a Network Table Entry that holds the value of type Array of Strings.
 type StringArray struct {
 	entry
@@ -21,16 +23,17 @@ func NewStringArray(value []string) *StringArray {
 }
 
 //MarshalEntry implements Marshaler for Network Table Entry.
-func (sa *StringArray) MarshalEntry() ([]byte, error) {
+func (sa *StringArray) MarshalEntry(writer io.Writer) error {
 	lenArray := byte(len(sa.value))
-	var output []byte
-	output = append(output, lenArray)
-	for _, s := range sa.value {
-		val, err := s.MarshalEntry()
-		if err != nil {
-			return nil, err
-		}
-		output = append(output, val...)
+	_, err := writer.Write([]byte{lenArray})
+	if err != nil {
+		return err
 	}
-	return output, nil
+	for _, s := range sa.value {
+		err = s.MarshalEntry(writer)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }

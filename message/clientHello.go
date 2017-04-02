@@ -1,6 +1,7 @@
 package message
 
 import "github.com/technomancers/goNTCore/entry"
+import "io"
 
 //ClientHello is sent when a client is first communicating to a server.
 type ClientHello struct {
@@ -21,14 +22,15 @@ func NewClientHello(protocol [2]byte, clientName string) *ClientHello {
 }
 
 //MarshalMessage implements Marshaler for Network Table Messages.
-func (ch *ClientHello) MarshalMessage() ([]byte, error) {
-	cnBytes, err := ch.clientName.MarshalEntry()
+func (ch *ClientHello) MarshalMessage(writer io.Writer) error {
+	_, err := writer.Write([]byte{ch.Type()})
 	if err != nil {
-		return nil, err
+		return err
 	}
-	var output []byte
-	output = append(output, ch.Type())
-	output = append(output, ch.protocol[:]...)
-	output = append(output, cnBytes...)
-	return output, nil
+	_, err = writer.Write(ch.protocol[:])
+	if err != nil {
+		return err
+	}
+	err = ch.clientName.MarshalEntry(writer)
+	return err
 }

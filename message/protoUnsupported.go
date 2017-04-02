@@ -1,5 +1,7 @@
 package message
 
+import "io"
+
 //ProtoUnsupported is sent by the server to the client if the server does not support the specified protocol version.
 type ProtoUnsupported struct {
 	message
@@ -17,9 +19,11 @@ func NewProtoUnsupported(protocol [2]byte) *ProtoUnsupported {
 }
 
 //MarshalMessage implements Marshaler for Network Table Messages.
-func (pu *ProtoUnsupported) MarshalMessage() ([]byte, error) {
-	var output []byte
-	output = append(output, pu.Type())
-	output = append(output, pu.protocol[:]...)
-	return output, nil
+func (pu *ProtoUnsupported) MarshalMessage(writer io.Writer) error {
+	_, err := writer.Write([]byte{pu.Type()})
+	if err != nil {
+		return err
+	}
+	_, err = writer.Write(pu.protocol[:])
+	return err
 }

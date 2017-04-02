@@ -1,6 +1,8 @@
 package message
 
 import (
+	"io"
+
 	"github.com/technomancers/goNTCore/entry"
 )
 
@@ -36,26 +38,35 @@ func NewEntryAssin(entryName string, entrier entry.Entrier, persistant bool, id,
 }
 
 //MarshalMessage implements Marshaler for Network Table Messages.
-func (ea *EntryAssign) MarshalMessage() ([]byte, error) {
-	nameBytes, err := ea.entryName.MarshalEntry()
-	if err != nil {
-		return nil, err
-	}
-	entryValue, err := ea.entrier.MarshalEntry()
-	if err != nil {
-		return nil, err
-	}
+func (ea *EntryAssign) MarshalMessage(writer io.Writer) error {
 	flags := byte(0x00)
 	if ea.entryPersistant {
 		flags = flags | flagPersistantMask
 	}
-	var output []byte
-	output = append(output, ea.Type())
-	output = append(output, nameBytes...)
-	output = append(output, ea.entrier.Type())
-	output = append(output, ea.entryID[:]...)
-	output = append(output, ea.entrySN[:]...)
-	output = append(output, flags)
-	output = append(output, entryValue...)
-	return output, nil
+	_, err := writer.Write([]byte{ea.Type()})
+	if err != nil {
+		return err
+	}
+	err = ea.entryName.MarshalEntry(writer)
+	if err != nil {
+		return err
+	}
+	_, err = writer.Write([]byte{ea.entrier.Type()})
+	if err != nil {
+		return err
+	}
+	_, err = writer.Write(ea.entryID[:])
+	if err != nil {
+		return err
+	}
+	_, err = writer.Write(ea.entrySN[:])
+	if err != nil {
+		return err
+	}
+	_, err = writer.Write([]byte{flags})
+	if err != nil {
+		return err
+	}
+	err = ea.entrier.MarshalEntry(writer)
+	return err
 }

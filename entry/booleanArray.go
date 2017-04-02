@@ -1,5 +1,7 @@
 package entry
 
+import "io"
+
 //BooleanArray is a Network Table Entry that holds the value of type Array of Booleans.
 type BooleanArray struct {
 	entry
@@ -21,16 +23,17 @@ func NewBooleanArray(value []bool) *BooleanArray {
 }
 
 //MarshalEntry implements Marshaler for Network Table Entry.
-func (ba *BooleanArray) MarshalEntry() ([]byte, error) {
+func (ba *BooleanArray) MarshalEntry(writer io.Writer) error {
 	lenArray := byte(len(ba.value))
-	var output []byte
-	output = append(output, lenArray)
-	for _, b := range ba.value {
-		val, err := b.MarshalEntry()
-		if err != nil {
-			return nil, err
-		}
-		output = append(output, val...)
+	_, err := writer.Write([]byte{lenArray})
+	if err != nil {
+		return err
 	}
-	return output, nil
+	for _, b := range ba.value {
+		err = b.MarshalEntry(writer)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }

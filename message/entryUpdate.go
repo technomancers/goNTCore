@@ -1,6 +1,8 @@
 package message
 
 import (
+	"io"
+
 	"github.com/technomancers/goNTCore/entry"
 )
 
@@ -25,16 +27,23 @@ func NewEntryUpdate(id, sn [2]byte, entrier entry.Entrier) *EntryUpdate {
 }
 
 //MarshalMessage implements Marshaler for Network Table Messages.
-func (eu *EntryUpdate) MarshalMessage() ([]byte, error) {
-	entryValue, err := eu.entrier.MarshalEntry()
+func (eu *EntryUpdate) MarshalMessage(writer io.Writer) error {
+	_, err := writer.Write([]byte{eu.Type()})
 	if err != nil {
-		return nil, err
+		return err
 	}
-	var output []byte
-	output = append(output, eu.Type())
-	output = append(output, eu.entryID[:]...)
-	output = append(output, eu.entrySN[:]...)
-	output = append(output, eu.entrier.Type())
-	output = append(output, entryValue...)
-	return nil, nil
+	_, err = writer.Write(eu.entryID[:])
+	if err != nil {
+		return err
+	}
+	_, err = writer.Write(eu.entrySN[:])
+	if err != nil {
+		return err
+	}
+	_, err = writer.Write([]byte{eu.entrier.Type()})
+	if err != nil {
+		return err
+	}
+	err = eu.entrier.MarshalEntry(writer)
+	return err
 }

@@ -1,6 +1,7 @@
 package entry
 
 import "github.com/technomancers/goNTCore/util"
+import "io"
 
 //String is a Network Table Entry that holds the value of type string.
 type String struct {
@@ -19,11 +20,12 @@ func NewString(value string) *String {
 }
 
 //MarshalEntry implements Marshaler for Network Table Entry.
-func (s *String) MarshalEntry() ([]byte, error) {
-	var output []byte
+func (s *String) MarshalEntry(writer io.Writer) error {
 	valueBytes := []byte(s.value)
-	valueLen := util.EncodeULeb128(uint32(len(valueBytes)))
-	output = append(output, valueLen...)
-	output = append(output, valueBytes...)
-	return output, nil
+	err := util.EncodeULeb128(uint32(len(valueBytes)), writer)
+	if err != nil {
+		return err
+	}
+	_, err = writer.Write(valueBytes)
+	return err
 }

@@ -1,5 +1,7 @@
 package message
 
+import "io"
+
 const (
 	flagPersistantMask byte = 0x01
 )
@@ -23,14 +25,19 @@ func NewEntryFlagUpdate(id [2]byte, persistant bool) *EntryFlagUpdate {
 }
 
 //MarshalMessage implements Marshaler for Network Table Messages.
-func (efu *EntryFlagUpdate) MarshalMessage() ([]byte, error) {
+func (efu *EntryFlagUpdate) MarshalMessage(writer io.Writer) error {
 	flags := byte(0x00)
 	if efu.persitant {
 		flags = flags | flagPersistantMask
 	}
-	var output []byte
-	output = append(output, efu.Type())
-	output = append(output, efu.entryID[:]...)
-	output = append(output, flags)
-	return output, nil
+	_, err := writer.Write([]byte{efu.Type()})
+	if err != nil {
+		return err
+	}
+	_, err = writer.Write(efu.entryID[:])
+	if err != nil {
+		return err
+	}
+	_, err = writer.Write([]byte{flags})
+	return err
 }

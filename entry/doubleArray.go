@@ -1,5 +1,7 @@
 package entry
 
+import "io"
+
 //DoubleArray is a Network Table Entry that holds the value of type Array of Doubles.
 type DoubleArray struct {
 	entry
@@ -21,16 +23,17 @@ func NewDoubleArray(value []float64) *DoubleArray {
 }
 
 //MarshalEntry implements Marshaler for Network Table Entry.
-func (da *DoubleArray) MarshalEntry() ([]byte, error) {
+func (da *DoubleArray) MarshalEntry(writer io.Writer) error {
 	lenArray := byte(len(da.value))
-	var output []byte
-	output = append(output, lenArray)
-	for _, d := range da.value {
-		val, err := d.MarshalEntry()
-		if err != nil {
-			return nil, err
-		}
-		output = append(output, val...)
+	_, err := writer.Write([]byte{lenArray})
+	if err != nil {
+		return err
 	}
-	return output, nil
+	for _, d := range da.value {
+		err = d.MarshalEntry(writer)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }

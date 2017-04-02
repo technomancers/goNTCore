@@ -1,5 +1,9 @@
 package message
 
+import (
+	"io"
+)
+
 //ClientHelloComplete is sent to the server after the client finished giving the server all of its entries that does not already exist on the server.
 type ClientHelloComplete struct {
 	message
@@ -15,7 +19,7 @@ func NewClientHelloComplete() *ClientHelloComplete {
 }
 
 //MarshalMessage implements Marshaler for Network Table Messages.
-func (chc *ClientHelloComplete) MarshalMessage() ([]byte, error) {
-	var output []byte
-	return append(output, chc.Type()), nil
+func (chc *ClientHelloComplete) MarshalMessage(writer io.Writer) error {
+	_, err := writer.Write([]byte{chc.Type()})
+	return err
 }
