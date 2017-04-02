@@ -37,3 +37,23 @@ func (sa *StringArray) MarshalEntry(writer io.Writer) error {
 	}
 	return nil
 }
+
+//UnmarshalEntry implements Unmarshaler for Network Table Entry.
+func (sa *StringArray) UnmarshalEntry(reader io.Reader) error {
+	sa.eType = eTypeStringArray
+	lenBuf := make([]byte, 1)
+	_, err := io.ReadFull(reader, lenBuf)
+	if err != nil {
+		return err
+	}
+	numEle := int(lenBuf[0])
+	for i := 0; i < numEle; i++ {
+		st := new(String)
+		err = st.UnmarshalEntry(reader)
+		if err != nil {
+			return err
+		}
+		sa.value = append(sa.value, st)
+	}
+	return nil
+}

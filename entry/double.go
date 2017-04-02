@@ -30,3 +30,16 @@ func (d *Double) MarshalEntry(writer io.Writer) error {
 	_, err := writer.Write(buf)
 	return err
 }
+
+//UnmarshalEntry implements Unmarshaler for Network Table Entry.
+func (d *Double) UnmarshalEntry(reader io.Reader) error {
+	d.eType = eTypeDouble
+	buf := make([]byte, 8)
+	_, err := io.ReadFull(reader, buf)
+	if err != nil {
+		return err
+	}
+	double := binary.BigEndian.Uint64(buf)
+	d.value = math.Float64frombits(double)
+	return nil
+}

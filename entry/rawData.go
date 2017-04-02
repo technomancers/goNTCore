@@ -32,3 +32,19 @@ func (rd *RawData) MarshalEntry(writer io.Writer) error {
 	_, err = writer.Write(rd.data)
 	return err
 }
+
+//UnmarshalEntry implements Unmarshaler for Network Table Entry.
+func (rd *RawData) UnmarshalEntry(reader io.Reader) error {
+	rd.eType = eTypeRawData
+	dataLength, err := util.DecodeULeb128(reader)
+	if err != nil {
+		return err
+	}
+	buf := make([]byte, dataLength)
+	_, err = io.ReadFull(reader, buf)
+	if err != nil {
+		return err
+	}
+	rd.data = buf
+	return nil
+}

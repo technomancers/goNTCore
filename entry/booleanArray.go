@@ -37,3 +37,23 @@ func (ba *BooleanArray) MarshalEntry(writer io.Writer) error {
 	}
 	return nil
 }
+
+//UnmarshalEntry implements Unmarshaler for Network Table Entry.
+func (ba *BooleanArray) UnmarshalEntry(reader io.Reader) error {
+	ba.eType = eTypeBooleanArray
+	lenBuf := make([]byte, 1)
+	_, err := io.ReadFull(reader, lenBuf)
+	if err != nil {
+		return err
+	}
+	numEle := int(lenBuf[0])
+	for i := 0; i < numEle; i++ {
+		boolean := new(Boolean)
+		err = boolean.UnmarshalEntry(reader)
+		if err != nil {
+			return err
+		}
+		ba.value = append(ba.value, boolean)
+	}
+	return nil
+}

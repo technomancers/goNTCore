@@ -29,3 +29,19 @@ func (s *String) MarshalEntry(writer io.Writer) error {
 	_, err = writer.Write(valueBytes)
 	return err
 }
+
+//UnmarshalEntry implements Unmarshaler for Network Table Entry.
+func (s *String) UnmarshalEntry(reader io.Reader) error {
+	s.eType = eTypeString
+	lengthString, err := util.DecodeULeb128(reader)
+	if err != nil {
+		return err
+	}
+	buf := make([]byte, lengthString)
+	_, err = io.ReadFull(reader, buf)
+	if err != nil {
+		return err
+	}
+	s.value = string(buf)
+	return nil
+}
