@@ -64,8 +64,5 @@ func Unmarshal(t byte, reader io.Reader) (Entrier, error) {
 		return nil, errors.New("Unmarshal Entry: Could not find appropropriate type")
 	}
 	err := ent.UnmarshalEntry(reader)
-	if err != nil {
-		return nil, err
-	}
-	return ent, nil
+	return ent, err
 }
