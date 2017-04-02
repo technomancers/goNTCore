@@ -12,7 +12,7 @@ type EntryDelete struct {
 func NewEntryDelete(id [2]byte) *EntryDelete {
 	return &EntryDelete{
 		message: message{
-			mType: mTypeEntryDelete,
+			mType: MTypeEntryDelete,
 		},
 		entryID: id,
 	}
@@ -30,7 +30,7 @@ func (ed *EntryDelete) MarshalMessage(writer io.Writer) error {
 
 //UnmarshalMessage implements Unmarshaler for Network Table Messages and assumes the message type byte has already been read.
 func (ed *EntryDelete) UnmarshalMessage(reader io.Reader) error {
-	ed.mType = mTypeEntryDelete
+	ed.mType = MTypeEntryDelete
 	idBuf := make([]byte, 2)
 
 	_, err := io.ReadFull(reader, idBuf)

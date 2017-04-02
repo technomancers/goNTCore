@@ -17,7 +17,7 @@ type EntryFlagUpdate struct {
 func NewEntryFlagUpdate(id [2]byte, persistant bool) *EntryFlagUpdate {
 	return &EntryFlagUpdate{
 		message: message{
-			mType: mTypeEntryFlagUpdate,
+			mType: MTypeEntryFlagUpdate,
 		},
 		entryID:   id,
 		persitant: persistant,
@@ -44,7 +44,7 @@ func (efu *EntryFlagUpdate) MarshalMessage(writer io.Writer) error {
 
 //UnmarshalMessage implements Unmarshaler for Network Table Messages and assumes the message type byte has already been read.
 func (efu *EntryFlagUpdate) UnmarshalMessage(reader io.Reader) error {
-	efu.mType = mTypeEntryFlagUpdate
+	efu.mType = MTypeEntryFlagUpdate
 	idBuf := make([]byte, 2)
 	flagBuf := make([]byte, 1)
 

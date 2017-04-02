@@ -19,7 +19,7 @@ type ClearAllEntries struct {
 func NewClearAllEntries() *ClearAllEntries {
 	return &ClearAllEntries{
 		message: message{
-			mType: mTypeClearAllEntries,
+			mType: MTypeClearAllEntries,
 		},
 		magic: clearAllMagic,
 		valid: true,
@@ -38,7 +38,7 @@ func (cae *ClearAllEntries) MarshalMessage(writer io.Writer) error {
 
 //UnmarshalMessage implements Unmarshaler for Network Table Messages and assumes the message type bit has already been read.
 func (cae *ClearAllEntries) UnmarshalMessage(reader io.Reader) error {
-	cae.mType = mTypeClearAllEntries
+	cae.mType = MTypeClearAllEntries
 	buf := make([]byte, 4)
 
 	_, err := io.ReadFull(reader, buf)

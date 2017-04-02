@@ -11,7 +11,7 @@ type ServerHelloComplete struct {
 func NewServerHelloComplete() *ServerHelloComplete {
 	return &ServerHelloComplete{
 		message{
-			mType: mTypeServerHelloComplete,
+			mType: MTypeServerHelloComplete,
 		},
 	}
 }
@@ -24,6 +24,6 @@ func (shc *ServerHelloComplete) MarshalMessage(writer io.Writer) error {
 
 //UnmarshalMessage implements Unmarshaler for Network Table Messages and assumes the message type byte has already been read.
 func (shc *ServerHelloComplete) UnmarshalMessage(reader io.Reader) error {
-	shc.mType = mTypeServerHelloComplete
+	shc.mType = MTypeServerHelloComplete
 	return nil
 }

@@ -11,7 +11,7 @@ type KeepAlive struct {
 func NewKeepAlive() *KeepAlive {
 	return &KeepAlive{
 		message{
-			mType: mTypeKeepAlive,
+			mType: MTypeKeepAlive,
 		},
 	}
 }
@@ -24,6 +24,6 @@ func (ka *KeepAlive) MarshalMessage(writer io.Writer) error {
 
 //UnmarshalMessage implements Unmarshaler for Network Table Messages and assumes the message type byte has already been read.
 func (ka *KeepAlive) UnmarshalMessage(reader io.Reader) error {
-	ka.mType = mTypeKeepAlive
+	ka.mType = MTypeKeepAlive
 	return nil
 }

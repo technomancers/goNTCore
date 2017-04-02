@@ -12,7 +12,7 @@ type ProtoUnsupported struct {
 func NewProtoUnsupported(protocol [2]byte) *ProtoUnsupported {
 	return &ProtoUnsupported{
 		message: message{
-			mType: mTypeProtoUnsupported,
+			mType: MTypeProtoUnsupported,
 		},
 		protocol: protocol,
 	}
@@ -30,7 +30,7 @@ func (pu *ProtoUnsupported) MarshalMessage(writer io.Writer) error {
 
 //UnmarshalMessage implements Unmarshaler for Network Table Messages and assumes the message type byte has already been read.
 func (pu *ProtoUnsupported) UnmarshalMessage(reader io.Reader) error {
-	pu.mType = mTypeProtoUnsupported
+	pu.mType = MTypeProtoUnsupported
 	protoBuf := make([]byte, 2)
 
 	_, err := io.ReadFull(reader, protoBuf)

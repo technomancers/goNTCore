@@ -22,7 +22,7 @@ func NewServerHello(firstTime bool, serverName string) *ServerHello {
 
 	return &ServerHello{
 		message: message{
-			mType: mTypeServerHello,
+			mType: MTypeServerHello,
 		},
 		firstTimeClient: firstTime,
 		serverName:      entry.NewString(serverName),
@@ -49,7 +49,7 @@ func (sh *ServerHello) MarshalMessage(writer io.Writer) error {
 
 //UnmarshalMessage implements Unmarshaler for Network Table Messages and assumes the message type byte has already been read.
 func (sh *ServerHello) UnmarshalMessage(reader io.Reader) error {
-	sh.mType = mTypeServerHello
+	sh.mType = MTypeServerHello
 	flagBuf := make([]byte, 1)
 	st := new(entry.String)
 

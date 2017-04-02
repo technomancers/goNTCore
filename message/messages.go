@@ -5,19 +5,19 @@ import (
 )
 
 const (
-	mTypeKeepAlive           byte = 0x00
-	mTypeClientHello         byte = 0x01
-	mTypeProtoUnsupported    byte = 0x02
-	mTypeServerHelloComplete byte = 0x03
-	mTypeServerHello         byte = 0x04
-	mTypeClientHelloComplete byte = 0x05
-	mTypeEntryAssign         byte = 0x10
-	mTypeEntryUpdate         byte = 0x11
-	mTypeEntryFlagUpdate     byte = 0x12
-	mTypeEntryDelete         byte = 0x13
-	mTypeClearAllEntries     byte = 0x14
-	mTypeRPCExecute          byte = 0x20
-	mTypeRPCResponse         byte = 0x21
+	MTypeKeepAlive           byte = 0x00
+	MTypeClientHello         byte = 0x01
+	MTypeProtoUnsupported    byte = 0x02
+	MTypeServerHelloComplete byte = 0x03
+	MTypeServerHello         byte = 0x04
+	MTypeClientHelloComplete byte = 0x05
+	MTypeEntryAssign         byte = 0x10
+	MTypeEntryUpdate         byte = 0x11
+	MTypeEntryFlagUpdate     byte = 0x12
+	MTypeEntryDelete         byte = 0x13
+	MTypeClearAllEntries     byte = 0x14
+	MTypeRPCExecute          byte = 0x20
+	MTypeRPCResponse         byte = 0x21
 )
 
 type message struct {

@@ -14,7 +14,7 @@ type ClientHello struct {
 func NewClientHello(protocol [2]byte, clientName string) *ClientHello {
 	return &ClientHello{
 		message: message{
-			mType: mTypeClientHello,
+			mType: MTypeClientHello,
 		},
 		protocol:   protocol,
 		clientName: entry.NewString(clientName),
@@ -37,7 +37,7 @@ func (ch *ClientHello) MarshalMessage(writer io.Writer) error {
 
 //UnmarshalMessage implements Unmarshaler for Network Table Messages and assumes the message type byte has already been read.
 func (ch *ClientHello) UnmarshalMessage(reader io.Reader) error {
-	ch.mType = mTypeClientHello
+	ch.mType = MTypeClientHello
 	protoBuf := make([]byte, 2)
 	st := new(entry.String)
 

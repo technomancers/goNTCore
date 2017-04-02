@@ -27,7 +27,7 @@ type EntryAssign struct {
 func NewEntryAssin(entryName string, entrier entry.Entrier, persistant bool, id, sn [2]byte) *EntryAssign {
 	return &EntryAssign{
 		message: message{
-			mType: mTypeEntryAssign,
+			mType: MTypeEntryAssign,
 		},
 		entryName:       entry.NewString(entryName),
 		entrier:         entrier,
@@ -73,7 +73,7 @@ func (ea *EntryAssign) MarshalMessage(writer io.Writer) error {
 
 //UnmarshalMessage implements Unmarshaler for Network Table Messages and assumes the message type byte has already been read.
 func (ea *EntryAssign) UnmarshalMessage(reader io.Reader) error {
-	ea.mType = mTypeEntryAssign
+	ea.mType = MTypeEntryAssign
 	name := new(entry.String)
 	typeBuf := make([]byte, 1)
 	idBuf := make([]byte, 2)

@@ -18,7 +18,7 @@ type EntryUpdate struct {
 func NewEntryUpdate(id, sn [2]byte, entrier entry.Entrier) *EntryUpdate {
 	return &EntryUpdate{
 		message: message{
-			mType: mTypeEntryUpdate,
+			mType: MTypeEntryUpdate,
 		},
 		entryID: id,
 		entrySN: sn,
@@ -50,7 +50,7 @@ func (eu *EntryUpdate) MarshalMessage(writer io.Writer) error {
 
 //UnmarshalMessage implements Unmarshaler for Network Table Messages and assumes the message type byte has already been read.
 func (eu *EntryUpdate) UnmarshalMessage(reader io.Reader) error {
-	eu.mType = mTypeEntryUpdate
+	eu.mType = MTypeEntryUpdate
 	idBuf := make([]byte, 2)
 	snBuf := make([]byte, 2)
 	typeBuf := make([]byte, 1)
