@@ -1,4 +1,4 @@
-package entry
+package entryType
 
 import (
 	"io"
