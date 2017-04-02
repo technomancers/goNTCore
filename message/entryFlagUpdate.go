@@ -41,3 +41,23 @@ func (efu *EntryFlagUpdate) MarshalMessage(writer io.Writer) error {
 	_, err = writer.Write([]byte{flags})
 	return err
 }
+
+//UnmarshalMessage implements Unmarshaler for Network Table Messages and assumes the message type byte has already been read.
+func (efu *EntryFlagUpdate) UnmarshalMessage(reader io.Reader) error {
+	efu.mType = mTypeEntryFlagUpdate
+	idBuf := make([]byte, 2)
+	flagBuf := make([]byte, 1)
+	_, err := io.ReadFull(reader, idBuf)
+	if err != nil {
+		return err
+	}
+	_, err = io.ReadFull(reader, flagBuf)
+	if err != nil {
+		return err
+	}
+	for i := 0; i < len(idBuf); i++ {
+		efu.entryID[i] = idBuf[i]
+	}
+	efu.persitant = flagBuf[0]&flagPersistantMask == flagPersistantMask
+	return nil
+}

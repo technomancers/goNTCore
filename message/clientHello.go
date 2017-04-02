@@ -34,3 +34,23 @@ func (ch *ClientHello) MarshalMessage(writer io.Writer) error {
 	err = ch.clientName.MarshalEntry(writer)
 	return err
 }
+
+//UnmarshalMessage implements Unmarshaler for Network Table Messages and assumes the message type byte has already been read.
+func (ch *ClientHello) UnmarshalMessage(reader io.Reader) error {
+	ch.mType = mTypeClientHello
+	protoBuf := make([]byte, 2)
+	_, err := io.ReadFull(reader, protoBuf)
+	if err != nil {
+		return err
+	}
+	for i := 0; i < len(protoBuf); i++ {
+		ch.protocol[i] = protoBuf[i]
+	}
+	st := new(entry.String)
+	err = st.UnmarshalEntry(reader)
+	if err != nil {
+		return err
+	}
+	ch.clientName = st
+	return nil
+}

@@ -21,3 +21,9 @@ func (shc *ServerHelloComplete) MarshalMessage(writer io.Writer) error {
 	_, err := writer.Write([]byte{shc.Type()})
 	return err
 }
+
+//UnmarshalMessage implements Unmarshaler for Network Table Messages and assumes the message type byte has already been read.
+func (shc *ServerHelloComplete) UnmarshalMessage(reader io.Reader) error {
+	shc.mType = mTypeServerHelloComplete
+	return nil
+}

@@ -36,7 +36,31 @@ func (sh *ServerHello) MarshalMessage(writer io.Writer) error {
 		flags = flags | flagAlreadySeenClientMask
 	}
 	_, err := writer.Write([]byte{sh.Type()})
+	if err != nil {
+		return err
+	}
 	_, err = writer.Write([]byte{flags})
+	if err != nil {
+		return err
+	}
 	err = sh.serverName.MarshalEntry(writer)
 	return err
+}
+
+//UnmarshalMessage implements Unmarshaler for Network Table Messages and assumes the message type byte has already been read.
+func (sh *ServerHello) UnmarshalMessage(reader io.Reader) error {
+	sh.mType = mTypeServerHello
+	flagBuf := make([]byte, 1)
+	_, err := io.ReadFull(reader, flagBuf)
+	if err != nil {
+		return err
+	}
+	sh.firstTimeClient = flagBuf[0]&flagAlreadySeenClientMask != flagAlreadySeenClientMask
+	st := new(entry.String)
+	err = st.UnmarshalEntry(reader)
+	if err != nil {
+		return err
+	}
+	sh.serverName = st
+	return nil
 }

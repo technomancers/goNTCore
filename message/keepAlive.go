@@ -21,3 +21,9 @@ func (ka *KeepAlive) MarshalMessage(writer io.Writer) error {
 	_, err := writer.Write([]byte{ka.Type()})
 	return err
 }
+
+//UnmarshalMessage implements Unmarshaler for Network Table Messages and assumes the message type byte has already been read.
+func (ka *KeepAlive) UnmarshalMessage(reader io.Reader) error {
+	ka.mType = mTypeKeepAlive
+	return nil
+}
