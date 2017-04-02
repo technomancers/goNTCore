@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"io"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/technomancers/goNTCore/message"
 )
 
@@ -12,6 +13,8 @@ const (
 	PORT = 1735
 	//PENDING is the client status used to make sure that the handshake has been completed.
 	PENDING = "pending"
+	//LISTENING is used during the handshake to specify it if looking to see what the server has.
+	LISTENING = "listening"
 	//READY is used to state that the client has finished the handshake.
 	READY = "ready"
 )
@@ -23,6 +26,7 @@ var (
 
 //SendMsg adds a buffer to the Marshaling before sending so the whole message is sent at once.
 func SendMsg(msg message.Messager, writer io.Writer) error {
+	spew.Dump(msg)
 	sendBuf := new(bytes.Buffer)
 	err := msg.MarshalMessage(sendBuf)
 	if err != nil {

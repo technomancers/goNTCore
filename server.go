@@ -9,7 +9,6 @@ import (
 
 	"time"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/technomancers/goNTCore/message"
 	"github.com/technomancers/goNTCore/util"
 )
@@ -55,14 +54,12 @@ func (s *Server) Close() error {
 //Spin off a new goroutine to connect to the client.
 //Keep the connection to the client open to allow for communication in both directions.
 func (s *Server) Listen() {
-	s.Log <- NewLogMessage(fmt.Sprintf("Now listening on port %d for clients.", PORT))
 	for {
 		conn, err := s.l.Accept()
 		if err != nil {
 			s.Log <- NewErrorMessage(err)
 			continue
 		}
-		s.Log <- NewLogMessage("New Client")
 		cl := new(Client)
 		cl.Conn = conn
 		cl.connected = true
@@ -143,9 +140,6 @@ func (s *Server) handleConn(cl *Client) {
 }
 
 func (s *Server) handler(msg message.Messager, cl *Client) {
-	if msg.Type() != message.MTypeKeepAlive {
-		spew.Dump(msg.Type())
-	}
 	switch msg.Type() {
 	case message.MTypeKeepAlive:
 		return
