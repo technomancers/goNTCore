@@ -30,3 +30,22 @@ func EncodeULeb128(value uint32, writer io.Writer) error {
 	_, err := writer.Write([]byte{byte(value & sevenBitMask)})
 	return err
 }
+
+//DecodeULeb128 decods from the reader using the LEB128 standard and returns a uint32 of the value it found.
+func DecodeULeb128(reader io.Reader) (uint32, error) {
+	var result uint32
+	var cur = [1]byte{0x80}
+	var ctr uint32
+	//While there is always more to read
+	for cur[0]&byte(mostSigBit) == byte(mostSigBit) {
+		//Read the value.
+		//If this is the last value (mostSigBit is 0) then this will break loop in next iteration.
+		_, err := io.ReadFull(reader, cur[:])
+		if err != nil {
+			return 0, err
+		}
+		result += uint32((cur[0] & byte(sevenBitMask))) << (ctr * 7)
+		ctr++
+	}
+	return result, nil
+}
