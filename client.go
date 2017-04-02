@@ -16,6 +16,7 @@ type Client struct {
 	name      string
 	status    string
 	Log       chan LogMessage
+	sendOnly  bool
 }
 
 //NewClient creates a new client to communicate to a Network Table server.
@@ -30,7 +31,18 @@ func NewClient(serverHost string, name string) (*Client, error) {
 		name:      name,
 		status:    "pending",
 		Log:       make(chan LogMessage),
+		sendOnly:  flase,
 	}, nil
+}
+
+//NewSendOnlyClient creates a client that does not keep up with keys or values.
+//All this client has is the ability to add and remove variables from the server.
+func NewSendOnlyClient(serverHost string, name string) (*Client, error) {
+	c, err := NewClient(serverHost, name)
+	if err != nil {
+		return nil, err
+	}
+	c.sendOnly = true
 }
 
 //Close closes the connection to the Network Table server.
@@ -77,14 +89,29 @@ func (c *Client) handler(msg message.Messager) {
 		c.Log <- NewErrorMessage(errors.New("Unsupported Protocol Version"))
 		c.Close()
 	case message.MTypeEntryAssign:
+		if c.sendOnly {
+			return
+		}
 		c.Log <- NewLogMessage("Entry Assign Not Implemented")
 	case message.MTypeEntryUpdate:
+		if c.sendOnly {
+			return
+		}
 		c.Log <- NewLogMessage("Entry Update Not Implemented")
 	case message.MTypeEntryFlagUpdate:
+		if c.sendOnly {
+			return
+		}
 		c.Log <- NewLogMessage("Entry Flag Update Not Implemented")
 	case message.MTypeEntryDelete:
+		if c.sendOnly {
+			return
+		}
 		c.Log <- NewLogMessage("Entry Delete Not Implemented")
 	case message.MTypeClearAllEntries:
+		if c.sendOnly {
+			return
+		}
 		c.Log <- NewLogMessage("Clear All Entries Not Implemented")
 	default:
 		c.Log <- NewErrorMessage(errors.New("Could not handle the message"))
