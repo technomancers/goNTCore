@@ -22,6 +22,15 @@ func NewBooleanArray(value []bool) *BooleanArray {
 	return ba
 }
 
+//GetValue gets the value of the string.
+func (ba *BooleanArray) GetValue() []bool {
+	var out []bool
+	for _, b := range ba.value {
+		out = append(out, b.GetValue())
+	}
+	return out
+}
+
 //MarshalEntry implements Marshaler for Network Table Entry.
 func (ba *BooleanArray) MarshalEntry(writer io.Writer) error {
 	lenArray := byte(len(ba.value))

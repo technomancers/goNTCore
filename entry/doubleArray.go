@@ -22,6 +22,15 @@ func NewDoubleArray(value []float64) *DoubleArray {
 	return da
 }
 
+//GetValue gets the value of the string.
+func (da *DoubleArray) GetValue() []float64 {
+	var out []float64
+	for _, d := range da.value {
+		out = append(out, d.GetValue())
+	}
+	return out
+}
+
 //MarshalEntry implements Marshaler for Network Table Entry.
 func (da *DoubleArray) MarshalEntry(writer io.Writer) error {
 	lenArray := byte(len(da.value))

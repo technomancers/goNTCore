@@ -22,6 +22,15 @@ func NewStringArray(value []string) *StringArray {
 	return sa
 }
 
+//GetValue gets the value of the string.
+func (sa *StringArray) GetValue() []string {
+	var out []string
+	for _, s := range sa.value {
+		out = append(out, s.GetValue())
+	}
+	return out
+}
+
 //MarshalEntry implements Marshaler for Network Table Entry.
 func (sa *StringArray) MarshalEntry(writer io.Writer) error {
 	lenArray := byte(len(sa.value))

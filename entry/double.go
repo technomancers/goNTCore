@@ -22,6 +22,11 @@ func NewDouble(value float64) *Double {
 	}
 }
 
+//GetValue gets the value of the string.
+func (d *Double) GetValue() float64 {
+	return d.value
+}
+
 //MarshalEntry implements Marshaler for Network Table Entry.
 func (d *Double) MarshalEntry(writer io.Writer) error {
 	val := math.Float64bits(d.value)

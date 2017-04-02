@@ -23,6 +23,11 @@ func NewBoolean(value bool) *Boolean {
 	}
 }
 
+//GetValue gets the value of the string.
+func (b *Boolean) GetValue() bool {
+	return b.value
+}
+
 //MarshalEntry implements Marshaler for Network Table Entry.
 func (b *Boolean) MarshalEntry(writer io.Writer) error {
 	val := booleanFalse
