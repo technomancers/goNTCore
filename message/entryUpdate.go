@@ -3,7 +3,7 @@ package message
 import (
 	"io"
 
-	"github.com/technomancers/goNTCore/entry"
+	"github.com/technomancers/goNTCore/entryType"
 )
 
 //EntryUpdate is used to tell the network that an entry has been updated.
@@ -11,11 +11,11 @@ type EntryUpdate struct {
 	message
 	entryID [2]byte
 	entrySN [2]byte
-	entrier entry.Entrier
+	entrier entryType.Entrier
 }
 
 //NewEntryUpdate creates a new instance on EntryUpdate.
-func NewEntryUpdate(id, sn [2]byte, entrier entry.Entrier) *EntryUpdate {
+func NewEntryUpdate(id, sn [2]byte, entrier entryType.Entrier) *EntryUpdate {
 	return &EntryUpdate{
 		message: message{
 			mType: MTypeEntryUpdate,
@@ -67,7 +67,7 @@ func (eu *EntryUpdate) UnmarshalMessage(reader io.Reader) error {
 	if err != nil {
 		return err
 	}
-	ent, err := entry.Unmarshal(typeBuf[0], reader)
+	ent, err := entryType.Unmarshal(typeBuf[0], reader)
 	if err != nil {
 		return err
 	}

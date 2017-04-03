@@ -3,7 +3,7 @@ package message
 import (
 	"io"
 
-	"github.com/technomancers/goNTCore/entry"
+	"github.com/technomancers/goNTCore/entryType"
 )
 
 var (
@@ -16,20 +16,20 @@ var (
 //EntryAssign is used to inform others that a new entry was introduced into the network.
 type EntryAssign struct {
 	message
-	entryName       *entry.String
+	entryName       *entryType.String
 	entryID         [2]byte
 	entrySN         [2]byte
 	entryPersistant bool
-	entrier         entry.Entrier
+	entrier         entryType.Entrier
 }
 
 //NewEntryAssin creates a new instance on EntryAssign.
-func NewEntryAssin(entryName string, entrier entry.Entrier, persistant bool, id, sn [2]byte) *EntryAssign {
+func NewEntryAssin(entryName string, entrier entryType.Entrier, persistant bool, id, sn [2]byte) *EntryAssign {
 	return &EntryAssign{
 		message: message{
 			mType: MTypeEntryAssign,
 		},
-		entryName:       entry.NewString(entryName),
+		entryName:       entryType.NewString(entryName),
 		entrier:         entrier,
 		entryPersistant: persistant,
 		entryID:         id,
@@ -74,7 +74,7 @@ func (ea *EntryAssign) MarshalMessage(writer io.Writer) error {
 //UnmarshalMessage implements Unmarshaler for Network Table Messages and assumes the message type byte has already been read.
 func (ea *EntryAssign) UnmarshalMessage(reader io.Reader) error {
 	ea.mType = MTypeEntryAssign
-	name := new(entry.String)
+	name := new(entryType.String)
 	typeBuf := make([]byte, 1)
 	idBuf := make([]byte, 2)
 	snBuf := make([]byte, 2)
@@ -100,7 +100,7 @@ func (ea *EntryAssign) UnmarshalMessage(reader io.Reader) error {
 	if err != nil {
 		return err
 	}
-	ent, err := entry.Unmarshal(typeBuf[0], reader)
+	ent, err := entryType.Unmarshal(typeBuf[0], reader)
 	if err != nil {
 		return err
 	}

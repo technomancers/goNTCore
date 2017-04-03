@@ -1,13 +1,16 @@
 package message
 
-import "github.com/technomancers/goNTCore/entry"
-import "io"
+import (
+	"io"
+
+	"github.com/technomancers/goNTCore/entryType"
+)
 
 //ClientHello is sent when a client is first communicating to a server.
 type ClientHello struct {
 	message
 	protocol   [2]byte
-	clientName *entry.String
+	clientName *entryType.String
 }
 
 //NewClientHello creates a new instance of ClientHello with the specified Protocol and Client Name.
@@ -17,7 +20,7 @@ func NewClientHello(protocol [2]byte, clientName string) *ClientHello {
 			mType: MTypeClientHello,
 		},
 		protocol:   protocol,
-		clientName: entry.NewString(clientName),
+		clientName: entryType.NewString(clientName),
 	}
 }
 
@@ -49,7 +52,7 @@ func (ch *ClientHello) MarshalMessage(writer io.Writer) error {
 func (ch *ClientHello) UnmarshalMessage(reader io.Reader) error {
 	ch.mType = MTypeClientHello
 	protoBuf := make([]byte, 2)
-	st := new(entry.String)
+	st := new(entryType.String)
 
 	_, err := io.ReadFull(reader, protoBuf)
 	if err != nil {

@@ -3,7 +3,7 @@ package message
 import (
 	"io"
 
-	"github.com/technomancers/goNTCore/entry"
+	"github.com/technomancers/goNTCore/entryType"
 )
 
 const (
@@ -14,7 +14,7 @@ const (
 type ServerHello struct {
 	message
 	firstTimeClient bool
-	serverName      *entry.String
+	serverName      *entryType.String
 }
 
 //NewServerHello creates a new instance of ServerHello.
@@ -25,7 +25,7 @@ func NewServerHello(firstTime bool, serverName string) *ServerHello {
 			mType: MTypeServerHello,
 		},
 		firstTimeClient: firstTime,
-		serverName:      entry.NewString(serverName),
+		serverName:      entryType.NewString(serverName),
 	}
 }
 
@@ -51,7 +51,7 @@ func (sh *ServerHello) MarshalMessage(writer io.Writer) error {
 func (sh *ServerHello) UnmarshalMessage(reader io.Reader) error {
 	sh.mType = MTypeServerHello
 	flagBuf := make([]byte, 1)
-	st := new(entry.String)
+	st := new(entryType.String)
 
 	_, err := io.ReadFull(reader, flagBuf)
 	if err != nil {
