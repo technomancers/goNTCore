@@ -31,7 +31,7 @@ func NewClient(serverHost string, name string) (*Client, error) {
 		name:      name,
 		status:    "pending",
 		Log:       make(chan LogMessage),
-		sendOnly:  flase,
+		sendOnly:  false,
 	}, nil
 }
 
@@ -43,6 +43,7 @@ func NewSendOnlyClient(serverHost string, name string) (*Client, error) {
 		return nil, err
 	}
 	c.sendOnly = true
+	return c, nil
 }
 
 //Close closes the connection to the Network Table server.
