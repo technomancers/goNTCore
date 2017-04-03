@@ -5,8 +5,9 @@ import (
 )
 
 const (
-	sevenBitMask uint32 = 0x7f
-	mostSigBit   uint32 = 0x80
+	sevenBitMask   uint32 = 0x7f
+	mostSigBit     uint32 = 0x80
+	tableSeperator rune   = '/'
 )
 
 //EncodeULeb128 encodes the integer using the LEB128 Standard.
@@ -61,4 +62,16 @@ func Match(a, b []byte) bool {
 		}
 	}
 	return true
+}
+
+//SanatizeKey with make sure a "/" exist before the key but not after.
+func SanatizeKey(key string) string {
+	sanitized := []rune(key)
+	if sanitized[0] != tableSeperator {
+		sanitized = append([]rune{tableSeperator}, sanitized...)
+	}
+	if sanitized[len(sanitized)-1] == tableSeperator {
+		sanitized = sanitized[:len(sanitized)-1]
+	}
+	return string(sanitized)
 }
