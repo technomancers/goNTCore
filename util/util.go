@@ -75,3 +75,12 @@ func SanatizeKey(key string) string {
 	}
 	return string(sanitized)
 }
+
+//KeyJoin will join all the keys listed in the function together appropriatley.
+func KeyJoin(keys ...string) string {
+	var final string
+	for _, k := range keys {
+		final += SanatizeKey(k)
+	}
+	return final
+}
