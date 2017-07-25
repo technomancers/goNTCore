@@ -72,7 +72,7 @@ func (s *Server) Broadcast(msg message.Messager) {
 	for _, c := range s.conns {
 		if c.connected && c.status == READY {
 			go func(cl *Client) {
-				if err := SendMsg(msg, cl); err != nil {
+				if err := cl.SendMsg(msg); err != nil {
 					cl.Close()
 				}
 			}(c)
@@ -168,7 +168,7 @@ func (s *Server) startingHandshake(msg *message.ClientHello, cl *Client) {
 	cl.name = msg.GetClientName()
 	msgProto := msg.GetProtocol()
 	if !util.Match(msgProto[:], ProtocolVersion[:]) {
-		err := SendMsg(message.NewProtoUnsupported(ProtocolVersion), cl)
+		err := cl.SendMsg(message.NewProtoUnsupported(ProtocolVersion))
 		if err != nil {
 			s.Log <- NewErrorMessage(err)
 		}
@@ -179,13 +179,13 @@ func (s *Server) startingHandshake(msg *message.ClientHello, cl *Client) {
 	if !exist {
 		s.addClient(cl)
 	}
-	err := SendMsg(message.NewServerHello(!exist, s.name), cl)
+	err := cl.SendMsg(message.NewServerHello(!exist, s.name))
 	if err != nil {
 		s.Log <- NewErrorMessage(err)
 		cl.Close()
 	}
 	//Send data about Table
-	err = SendMsg(message.NewServerHelloComplete(), cl)
+	err = cl.SendMsg(message.NewServerHelloComplete())
 	if err != nil {
 		s.Log <- NewErrorMessage(err)
 		cl.Close()
