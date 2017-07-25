@@ -30,51 +30,51 @@ type NetworkTabler interface {
 	PutStringArray(key string, val []string) bool
 }
 
-//Table implements NetworkTabler based on a backend that needs to exist on create.
-type Table struct {
+//DataTable implements NetworkTabler based on a backend that needs to exist on create.
+type DataTable struct {
 	data Data
 	root string
 }
 
 //NewTable creates a new Network Table that is based off of the data and root passed in.
 //Pass in an empty string or "/" for root table.
-func NewTable(d Data, root string) *Table {
+func NewTable(d Data, root string) *DataTable {
 	if root == "" {
 		root = "/"
 	}
 	root = util.SanatizeKey(root)
-	return &Table{
+	return &DataTable{
 		data: d,
 		root: root,
 	}
 }
 
 //ContainsKey returns true if the key exist in the table.
-func (t *Table) ContainsKey(key string) bool {
+func (t *DataTable) ContainsKey(key string) bool {
 	key = t.getKey(key)
 	return t.data.IsKey(key)
 }
 
 //ContainsTable return true if the table exist in the table.
-func (t *Table) ContainsTable(key string) bool {
+func (t *DataTable) ContainsTable(key string) bool {
 	key = t.getKey(key)
 	return t.data.IsTable(key)
 }
 
 //Delete deletes the given key from the table.
-func (t *Table) Delete(key string) {
+func (t *DataTable) Delete(key string) {
 	key = t.getKey(key)
 	t.data.DeleteEntry(key) // nolint: errcheck
 }
 
 //DeleteAll deletes all keys from the table.
-func (t *Table) DeleteAll() {
+func (t *DataTable) DeleteAll() {
 	t.data.DeleteAll(t.root) // nolint: errcheck
 }
 
 //IsPersisted returns true if the key is to be persisted.
 //Returns false if the key does not exist.
-func (t *Table) IsPersisted(key string) bool {
+func (t *DataTable) IsPersisted(key string) bool {
 	key = t.getKey(key)
 	entry, err := t.data.GetEntry(key)
 	if err != nil {
@@ -84,7 +84,7 @@ func (t *Table) IsPersisted(key string) bool {
 }
 
 //GetKeys returns all the keys in the table.
-func (t *Table) GetKeys() []string {
+func (t *DataTable) GetKeys() []string {
 	entries, err := t.data.GetEntries(t.root)
 	if err != nil {
 		return []string{}
@@ -94,14 +94,14 @@ func (t *Table) GetKeys() []string {
 
 //GetTable gets a table with the specified key.
 //If table does not exist it creates a new one.
-func (t *Table) GetTable(key string) NetworkTabler {
+func (t *DataTable) GetTable(key string) NetworkTabler {
 	key = t.getKey(key)
 	return NewTable(t.data, key)
 }
 
 //GetBoolean gets the value of key as a boolean.
 //If the value is not of type boolean it returns the default value passed in.
-func (t *Table) GetBoolean(key string, def bool) bool {
+func (t *DataTable) GetBoolean(key string, def bool) bool {
 	key = t.getKey(key)
 	entry, err := t.data.GetEntry(key)
 	if err != nil {
@@ -118,7 +118,7 @@ func (t *Table) GetBoolean(key string, def bool) bool {
 //If value exist it updates it.
 //If value doesn't exist it will add it.
 //Returns false if key exist of a different type.
-func (t *Table) PutBoolean(key string, val bool) bool {
+func (t *DataTable) PutBoolean(key string, val bool) bool {
 	entry := &Entry{
 		Key:   key,
 		Type:  entryType.ETypeBoolean,
@@ -132,7 +132,7 @@ func (t *Table) PutBoolean(key string, val bool) bool {
 
 //GetNumber gets the value of key as a float64.
 //If the value is not of type float64 it returns the default value passed in.
-func (t *Table) GetNumber(key string, def float64) float64 {
+func (t *DataTable) GetNumber(key string, def float64) float64 {
 	key = t.getKey(key)
 	entry, err := t.data.GetEntry(key)
 	if err != nil {
@@ -149,7 +149,7 @@ func (t *Table) GetNumber(key string, def float64) float64 {
 //If value exist it updates it.
 //If value doesn't exist it will add it.
 //Returns false if key exist of a different type.
-func (t *Table) PutNumber(key string, val float64) bool {
+func (t *DataTable) PutNumber(key string, val float64) bool {
 	entry := &Entry{
 		Key:   key,
 		Type:  entryType.ETypeDouble,
@@ -163,7 +163,7 @@ func (t *Table) PutNumber(key string, val float64) bool {
 
 //GetString gets the value of key as a string.
 //If the value is not of type string it returns the default value passed in.
-func (t *Table) GetString(key string, def string) string {
+func (t *DataTable) GetString(key string, def string) string {
 	key = t.getKey(key)
 	entry, err := t.data.GetEntry(key)
 	if err != nil {
@@ -180,7 +180,7 @@ func (t *Table) GetString(key string, def string) string {
 //If value exist it updates it.
 //If value doesn't exist it will add it.
 //Returns false if key exist of a different type.
-func (t *Table) PutString(key string, val string) bool {
+func (t *DataTable) PutString(key string, val string) bool {
 	entry := &Entry{
 		Key:   key,
 		Type:  entryType.ETypeString,
@@ -194,7 +194,7 @@ func (t *Table) PutString(key string, val string) bool {
 
 //GetRaw gets the value of key as a slice of bytes.
 //If the value is not of type byte slice it returns the default value passed in.
-func (t *Table) GetRaw(key string, def []byte) []byte {
+func (t *DataTable) GetRaw(key string, def []byte) []byte {
 	key = t.getKey(key)
 	entry, err := t.data.GetEntry(key)
 	if err != nil {
@@ -211,7 +211,7 @@ func (t *Table) GetRaw(key string, def []byte) []byte {
 //If value exist it updates it.
 //If value doesn't exist it will add it.
 //Returns false if key exist of a different type.
-func (t *Table) PutRaw(key string, val []byte) bool {
+func (t *DataTable) PutRaw(key string, val []byte) bool {
 	entry := &Entry{
 		Key:   key,
 		Type:  entryType.ETypeRawData,
@@ -225,7 +225,7 @@ func (t *Table) PutRaw(key string, val []byte) bool {
 
 //GetBooleanArray gets the value of key as a slice of booleans.
 //If the value is not of type boolean slice it returns the default value passed in.
-func (t *Table) GetBooleanArray(key string, def []bool) []bool {
+func (t *DataTable) GetBooleanArray(key string, def []bool) []bool {
 	key = t.getKey(key)
 	entry, err := t.data.GetEntry(key)
 	if err != nil {
@@ -242,7 +242,7 @@ func (t *Table) GetBooleanArray(key string, def []bool) []bool {
 //If value exist it updates it.
 //If value doesn't exist it will add it.
 //Returns false if key exist of a different type.
-func (t *Table) PutBooleanArray(key string, val []bool) bool {
+func (t *DataTable) PutBooleanArray(key string, val []bool) bool {
 	entry := &Entry{
 		Key:   key,
 		Type:  entryType.ETypeBooleanArray,
@@ -256,7 +256,7 @@ func (t *Table) PutBooleanArray(key string, val []bool) bool {
 
 //GetNumberArray gets the value of key as a slice of float64s.
 //If the value is not of type float64 slice it returns the default value passed in.
-func (t *Table) GetNumberArray(key string, def []float64) []float64 {
+func (t *DataTable) GetNumberArray(key string, def []float64) []float64 {
 	key = t.getKey(key)
 	entry, err := t.data.GetEntry(key)
 	if err != nil {
@@ -273,7 +273,7 @@ func (t *Table) GetNumberArray(key string, def []float64) []float64 {
 //If value exist it updates it.
 //If value doesn't exist it will add it.
 //Returns false if key exist of a different type.
-func (t *Table) PutNumberArray(key string, val []float64) bool {
+func (t *DataTable) PutNumberArray(key string, val []float64) bool {
 	entry := &Entry{
 		Key:   key,
 		Type:  entryType.ETypeDoubleArray,
@@ -287,7 +287,7 @@ func (t *Table) PutNumberArray(key string, val []float64) bool {
 
 //GetStringArray gets the value of key as a slice of strings.
 //If the value is not of type string slice it returns the default value passed in.
-func (t *Table) GetStringArray(key string, def []string) []string {
+func (t *DataTable) GetStringArray(key string, def []string) []string {
 	key = t.getKey(key)
 	entry, err := t.data.GetEntry(key)
 	if err != nil {
@@ -304,7 +304,7 @@ func (t *Table) GetStringArray(key string, def []string) []string {
 //If value exist it updates it.
 //If value doesn't exist it will add it.
 //Returns false if key exist of a different type.
-func (t *Table) PutStringArray(key string, val []string) bool {
+func (t *DataTable) PutStringArray(key string, val []string) bool {
 	entry := &Entry{
 		Key:   key,
 		Type:  entryType.ETypeStringArray,
@@ -316,6 +316,6 @@ func (t *Table) PutStringArray(key string, val []string) bool {
 	return true
 }
 
-func (t *Table) getKey(key string) string {
+func (t *DataTable) getKey(key string) string {
 	return util.KeyJoin(t.root, key)
 }

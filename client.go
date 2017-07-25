@@ -15,12 +15,13 @@ type Client struct {
 	connected bool
 	name      string
 	status    string
+	dataTable NetworkTabler
 	Log       chan LogMessage
 	sendOnly  bool
 }
 
 //NewClient creates a new client to communicate to a Network Table server.
-func NewClient(serverHost string, name string) (*Client, error) {
+func NewClient(serverHost string, name string, data Data) (*Client, error) {
 	conn, err := net.Dial("tcp", fmt.Sprintf("%s:%d", serverHost, PORT))
 	if err != nil {
 		return nil, err
@@ -30,6 +31,7 @@ func NewClient(serverHost string, name string) (*Client, error) {
 		connected: true,
 		name:      name,
 		status:    "pending",
+		dataTable: NewTable(data, ""),
 		Log:       make(chan LogMessage),
 		sendOnly:  false,
 	}, nil
@@ -38,7 +40,7 @@ func NewClient(serverHost string, name string) (*Client, error) {
 //NewSendOnlyClient creates a client that does not keep up with keys or values.
 //All this client has is the ability to add and remove variables from the server.
 func NewSendOnlyClient(serverHost string, name string) (*Client, error) {
-	c, err := NewClient(serverHost, name)
+	c, err := NewClient(serverHost, name, new(NoopData))
 	if err != nil {
 		return nil, err
 	}

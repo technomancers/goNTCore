@@ -8,32 +8,33 @@ import (
 
 	"time"
 
-	"github.com/rs/zerolog/log"
 	"github.com/technomancers/goNTCore/message"
 	"github.com/technomancers/goNTCore/util"
 )
 
 //Server is an instance of a Network Table server.
 type Server struct {
-	l        net.Listener
-	conns    []*Client
-	name     string
-	periodic *time.Ticker
-	quit     chan bool
-	Log      chan LogMessage
+	l         net.Listener
+	conns     []*Client
+	name      string
+	periodic  *time.Ticker
+	dataTable NetworkTabler
+	quit      chan bool
+	Log       chan LogMessage
 }
 
 //NewServer creates a new Network Table server.
-func NewServer(name string) (*Server, error) {
+func NewServer(name string, data Data) (*Server, error) {
 	l, err := net.Listen("tcp", fmt.Sprintf(":%d", PORT))
 	if err != nil {
 		return nil, err
 	}
 	return &Server{
-		l:    l,
-		name: name,
-		Log:  make(chan LogMessage),
-		quit: make(chan bool),
+		l:         l,
+		name:      name,
+		Log:       make(chan LogMessage),
+		quit:      make(chan bool),
+		dataTable: NewTable(data, ""),
 	}, nil
 }
 
@@ -118,7 +119,6 @@ func (s *Server) cleanClients() {
 	temp := s.conns[:0]
 	for _, c := range s.conns {
 		if c.connected {
-			log.Info().Msg("Sending keep alive")
 			if err := c.SendMsg(message.NewKeepAlive()); err != nil {
 				c.Close()
 				continue
