@@ -8,6 +8,7 @@ import (
 
 	"time"
 
+	"github.com/rs/zerolog/log"
 	"github.com/technomancers/goNTCore/message"
 	"github.com/technomancers/goNTCore/util"
 )
@@ -67,8 +68,9 @@ func (s *Server) Listen() {
 	}
 }
 
-//Broadcast sends a message to each connected client that is ready.
-func (s *Server) Broadcast(msg message.Messager) {
+//SendMsg sends a message to each connected client that is ready.
+//Never returns an error and does not wait for execution to finish.
+func (s *Server) SendMsg(msg message.Messager) error {
 	for _, c := range s.conns {
 		if c.connected && c.status == READY {
 			go func(cl *Client) {
@@ -78,6 +80,7 @@ func (s *Server) Broadcast(msg message.Messager) {
 			}(c)
 		}
 	}
+	return nil
 }
 
 //StartPeriodicClean cleans up instances of connections that have been closed.
@@ -115,9 +118,15 @@ func (s *Server) cleanClients() {
 	temp := s.conns[:0]
 	for _, c := range s.conns {
 		if c.connected {
+			log.Info().Msg("Sending keep alive")
+			if err := c.SendMsg(message.NewKeepAlive()); err != nil {
+				c.Close()
+				continue
+			}
 			temp = append(temp, c)
 		}
 	}
+	s.conns = temp
 }
 
 //handleConn takes the connection and starts reading.
@@ -126,7 +135,9 @@ func (s *Server) handleConn(cl *Client) {
 		possibleMsgType := make([]byte, 1)
 		_, err := io.ReadFull(cl, possibleMsgType)
 		if err != nil {
-			s.Log <- NewErrorMessage(err)
+			if err != io.EOF {
+				s.Log <- NewErrorMessage(err)
+			}
 			cl.Close()
 			continue
 		}
