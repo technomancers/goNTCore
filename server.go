@@ -1,7 +1,6 @@
 package goNTCore
 
 import (
-	"bufio"
 	"errors"
 	"fmt"
 	"io"
@@ -69,11 +68,13 @@ func (s *Server) Listen() {
 }
 
 //Broadcast sends a message to each connected client that is ready.
-func (s *Server) Broadcast(reader bufio.Reader) {
+func (s *Server) Broadcast(msg message.Messager) {
 	for _, c := range s.conns {
 		if c.connected && c.status == READY {
 			go func(cl *Client) {
-				reader.WriteTo(cl)
+				if err := SendMsg(msg, cl); err != nil {
+					cl.Close()
+				}
 			}(c)
 		}
 	}
