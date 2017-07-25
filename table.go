@@ -1,6 +1,7 @@
 package goNTCore
 
 import (
+	"github.com/technomancers/goNTCore/entryType"
 	"github.com/technomancers/goNTCore/util"
 )
 
@@ -63,12 +64,12 @@ func (t *Table) ContainsTable(key string) bool {
 //Delete deletes the given key from the table.
 func (t *Table) Delete(key string) {
 	key = t.getKey(key)
-	t.data.DeleteEntry(key)
+	t.data.DeleteEntry(key) // nolint: errcheck
 }
 
 //DeleteAll deletes all keys from the table.
 func (t *Table) DeleteAll() {
-	t.data.DeleteAll()
+	t.data.DeleteAll(t.root) // nolint: errcheck
 }
 
 //IsPersisted returns true if the key is to be persisted.
@@ -84,7 +85,11 @@ func (t *Table) IsPersisted(key string) bool {
 
 //GetKeys returns all the keys in the table.
 func (t *Table) GetKeys() []string {
-	return nil
+	entries, err := t.data.GetEntries(t.root)
+	if err != nil {
+		return []string{}
+	}
+	return entries
 }
 
 //GetTable gets a table with the specified key.
@@ -114,7 +119,15 @@ func (t *Table) GetBoolean(key string, def bool) bool {
 //If value doesn't exist it will add it.
 //Returns false if key exist of a different type.
 func (t *Table) PutBoolean(key string, val bool) bool {
-	return false
+	entry := &Entry{
+		Key:   key,
+		Type:  entryType.ETypeBoolean,
+		Value: val,
+	}
+	if err := t.data.PutEntry(entry); err != nil {
+		return false
+	}
+	return true
 }
 
 //GetNumber gets the value of key as a float64.
@@ -137,7 +150,15 @@ func (t *Table) GetNumber(key string, def float64) float64 {
 //If value doesn't exist it will add it.
 //Returns false if key exist of a different type.
 func (t *Table) PutNumber(key string, val float64) bool {
-	return false
+	entry := &Entry{
+		Key:   key,
+		Type:  entryType.ETypeDouble,
+		Value: val,
+	}
+	if err := t.data.PutEntry(entry); err != nil {
+		return false
+	}
+	return true
 }
 
 //GetString gets the value of key as a string.
@@ -160,7 +181,15 @@ func (t *Table) GetString(key string, def string) string {
 //If value doesn't exist it will add it.
 //Returns false if key exist of a different type.
 func (t *Table) PutString(key string, val string) bool {
-	return false
+	entry := &Entry{
+		Key:   key,
+		Type:  entryType.ETypeString,
+		Value: val,
+	}
+	if err := t.data.PutEntry(entry); err != nil {
+		return false
+	}
+	return true
 }
 
 //GetRaw gets the value of key as a slice of bytes.
@@ -183,7 +212,15 @@ func (t *Table) GetRaw(key string, def []byte) []byte {
 //If value doesn't exist it will add it.
 //Returns false if key exist of a different type.
 func (t *Table) PutRaw(key string, val []byte) bool {
-	return false
+	entry := &Entry{
+		Key:   key,
+		Type:  entryType.ETypeRawData,
+		Value: val,
+	}
+	if err := t.data.PutEntry(entry); err != nil {
+		return false
+	}
+	return true
 }
 
 //GetBooleanArray gets the value of key as a slice of booleans.
@@ -206,7 +243,15 @@ func (t *Table) GetBooleanArray(key string, def []bool) []bool {
 //If value doesn't exist it will add it.
 //Returns false if key exist of a different type.
 func (t *Table) PutBooleanArray(key string, val []bool) bool {
-	return false
+	entry := &Entry{
+		Key:   key,
+		Type:  entryType.ETypeBooleanArray,
+		Value: val,
+	}
+	if err := t.data.PutEntry(entry); err != nil {
+		return false
+	}
+	return true
 }
 
 //GetNumberArray gets the value of key as a slice of float64s.
@@ -229,7 +274,15 @@ func (t *Table) GetNumberArray(key string, def []float64) []float64 {
 //If value doesn't exist it will add it.
 //Returns false if key exist of a different type.
 func (t *Table) PutNumberArray(key string, val []float64) bool {
-	return false
+	entry := &Entry{
+		Key:   key,
+		Type:  entryType.ETypeDoubleArray,
+		Value: val,
+	}
+	if err := t.data.PutEntry(entry); err != nil {
+		return false
+	}
+	return true
 }
 
 //GetStringArray gets the value of key as a slice of strings.
@@ -252,7 +305,15 @@ func (t *Table) GetStringArray(key string, def []string) []string {
 //If value doesn't exist it will add it.
 //Returns false if key exist of a different type.
 func (t *Table) PutStringArray(key string, val []string) bool {
-	return false
+	entry := &Entry{
+		Key:   key,
+		Type:  entryType.ETypeStringArray,
+		Value: val,
+	}
+	if err := t.data.PutEntry(entry); err != nil {
+		return false
+	}
+	return true
 }
 
 func (t *Table) getKey(key string) string {
