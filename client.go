@@ -73,9 +73,14 @@ func (c *Client) Listen() {
 	}
 }
 
+//SendMsg to the connected server
+func (c *Client) SendMsg(msg message.Messager) error {
+	return SendMsg(msg, c)
+}
+
 //StartHandshake starts the handshake with the server.
 func (c *Client) StartHandshake() error {
-	return SendMsg(message.NewClientHello(ProtocolVersion, c.name), c)
+	return c.SendMsg(message.NewClientHello(ProtocolVersion, c.name))
 }
 
 func (c *Client) handler(msg message.Messager) {
@@ -122,7 +127,7 @@ func (c *Client) handler(msg message.Messager) {
 
 func (c *Client) notifyOfDifference() {
 	//find the differences and create new entries for each.
-	err := SendMsg(message.NewClientHelloComplete(), c)
+	err := c.SendMsg(message.NewClientHelloComplete())
 	if err != nil {
 		c.Log <- NewErrorMessage(err)
 	}
