@@ -10,28 +10,3 @@ type Data interface {
 	IsTable(key string) bool
 	IsKey(key string) bool
 }
-
-type NoopData struct {
-}
-
-func (n *NoopData) PutEntry(ent *Entry) error {
-	return nil
-}
-func (n *NoopData) GetEntries(root string) ([]string, error) {
-	return nil, nil
-}
-func (n *NoopData) GetEntry(key string) (*Entry, error) {
-	return nil, nil
-}
-func (n *NoopData) DeleteEntry(key string) error {
-	return nil
-}
-func (n *NoopData) DeleteAll(root string) error {
-	return nil
-}
-func (n *NoopData) IsTable(key string) bool {
-	return false
-}
-func (n *NoopData) IsKey(key string) bool {
-	return false
-}

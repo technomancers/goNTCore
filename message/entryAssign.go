@@ -23,8 +23,8 @@ type EntryAssign struct {
 	entrier         entryType.Entrier
 }
 
-//NewEntryAssin creates a new instance on EntryAssign.
-func NewEntryAssin(entryName string, entrier entryType.Entrier, persistant bool, id, sn [2]byte) *EntryAssign {
+//NewEntryAssign creates a new instance on EntryAssign.
+func NewEntryAssign(entryName string, entrier entryType.Entrier, persistant bool, id, sn [2]byte) *EntryAssign {
 	return &EntryAssign{
 		message: message{
 			mType: MTypeEntryAssign,

@@ -37,17 +37,6 @@ func NewClient(serverHost string, name string, data Data) (*Client, error) {
 	}, nil
 }
 
-//NewSendOnlyClient creates a client that does not keep up with keys or values.
-//All this client has is the ability to add and remove variables from the server.
-func NewSendOnlyClient(serverHost string, name string) (*Client, error) {
-	c, err := NewClient(serverHost, name, new(NoopData))
-	if err != nil {
-		return nil, err
-	}
-	c.sendOnly = true
-	return c, nil
-}
-
 //Close closes the connection to the Network Table server.
 func (c *Client) Close() error {
 	c.connected = false
